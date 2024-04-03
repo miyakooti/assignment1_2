@@ -8,7 +8,13 @@ import os
 
 app = Flask(__name__)
 
+ACCESS_ID = "ASIAQ3EGVH4JXP6WSLP4"
+ACCESS_KEY = "4UZztJWvbJqU2W25jSkIGKAqoshG8HxEGsRrl3gC"
+
 app.config['SECRET_KEY'] = os.urandom(24)
+# dynamodb = boto3.resource("dynamodb", region_name='us-east-1',
+#          aws_access_key_id=ACCESS_ID,
+#          aws_secret_access_key= ACCESS_KEY)
 dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
 login_table = dynamodb.Table("login")
 
@@ -24,7 +30,7 @@ def login():
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
-        user = table.get_item(Key={'email': email})
+        user = login_table.get_item(Key={'email': email})
         if 'Item' in user:
             if user['Item']['email'] == email:
                 # ログイン成功
